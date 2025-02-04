@@ -133,9 +133,9 @@ int cyk_check(grammar_t const *gm, char const *word, int printmode) {
     int length = (int) strlen(word);
     char *table = (char*) malloc(length * length * gm->symbolc * sizeof(char));
     if (!table) return -1;
-    for (int i = 0; i < length * length * gm->symbolc; ++i) {
-        table[i] = 0;
-    }
+    memset(table, 0, length * length * gm->symbolc);
+    printf("# empty table\n");
+    print_table_internal(table, length, gm->symbolc);
     int last_cell_reached = 0;
     for (int depth = 0; depth < length; ++depth) {
         if (last_cell_reached) break;
