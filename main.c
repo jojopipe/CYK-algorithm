@@ -17,7 +17,7 @@ typedef struct grammar {
     symbol_t symbols[64];
 } grammar_t;
 
-int line_to_symbols(grammar_t *gm, char *line, int index) {
+int line_to_symbols(grammar_t *gm, char const *line, int index) {
     char curr = *line;
     int symbols_written = 0;
     gm->symbols[index].letter = curr;
@@ -30,6 +30,7 @@ int line_to_symbols(grammar_t *gm, char *line, int index) {
         gm->symbols[index].options[symbols_written++] = curr;
         curr = line[++i];
         if (curr < 'A' || (curr > 'Z' && curr < 'a') || curr > 'z') {
+            if (curr == 0) break;
             gm->symbols[index].options[symbols_written++] = 0;
             continue;
         }
@@ -48,7 +49,7 @@ int read_grammar_from_file(grammar_t *gm, char *file_path) {
     while(fgets(line_buf, MAXLINELENGTH, f)) {
         ++lines_read;
         //printf("%d: %s", lines_read, line_buf);
-        line_to_symbols(gm, line_buf, lines_read-1);
+        (void) line_to_symbols(gm, line_buf, lines_read-1);
     }
     gm->symbolc = lines_read;
     return 0;
@@ -89,8 +90,6 @@ void print_grammar(grammar_t *gm) {
 }
 
 int symbol_contains(symbol_t const *sy, char const part[2]) {
-    //part: a0, AA
-    //a0 XY LW 00
     for (int i = 0; i < 256; i+=2) {
         if (sy->options[i] == 0 && sy->options[i+1]) return 0;
         if (sy->options[i] == part[0] && sy->options[i+1] == part[1]) return 1;
@@ -126,20 +125,21 @@ void print_table_internal(char const *table, int length, int symbolc) {
     }
 }
 
+void reset_table(char *table, int length, int symbolc) {
+    for (int i = 0; i < length; ++i) {
+        for (int j = 0; j < length; ++j) {
+            for (int s = 0; s < symbolc; ++s) {
+                table[(i*length*length)+(j*length)+s] = 0;
+            }
+        }
+    }
+}
+
 int cyk_check(grammar_t const *gm, char const *word, int printmode) {
     int length = (int) strlen(word);
-    char *test = (char*) malloc(1000);
-    if (!test) return -1;
-    test[727] = 69;
     char *table = (char*) calloc(length * length * gm->symbolc, sizeof(char));
     if (!table) return -1;
-    /*printf("# empty table\n");
-    print_table_internal(table, length, gm->symbolc);
-    memset(table, 0, length * length * gm->symbolc);*/
-    for (int i = 0; i < gm->symbolc; ++i) {
-        char *cell = &table[(6*length*length)+(0*length)+i];
-        *cell = 0;
-    }
+    reset_table(table, length, gm->symbolc);
     printf("# empty table\n");
     print_table_internal(table, length, gm->symbolc);
     int last_cell_reached = 0;
@@ -191,11 +191,9 @@ int cyk_check(grammar_t const *gm, char const *word, int printmode) {
     printf("\n");
     if (table[0 *length * length + (length-1) * length] == 'S') {
         free(table);
-        free(test);
         return 1;
     }
     free(table);
-    free(test);
     return 0;
 }
 
