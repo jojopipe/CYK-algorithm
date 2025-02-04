@@ -1,0 +1,6 @@
+S → a ∣ AT
+T → a ∣ b ∣ VT ∣ SU
+A → a
+U → VV
+V → BA ∣ AT ∣ SS
+B → b

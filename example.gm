@@ -1,0 +1,5 @@
+S -> a | XY | LW
+X -> a | b | LW
+Y -> b
+L -> c | LX
+W -> a | c
