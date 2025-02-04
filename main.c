@@ -1,9 +1,6 @@
 #include <stdio.h>
 #include <stdlib.h>
-#include <assert.h>
 #include <string.h>
-
-#include <stdio.h>
 
 #define MAXLINELENGTH 512
 
@@ -131,9 +128,18 @@ void print_table_internal(char const *table, int length, int symbolc) {
 
 int cyk_check(grammar_t const *gm, char const *word, int printmode) {
     int length = (int) strlen(word);
-    char *table = (char*) malloc(length * length * gm->symbolc * sizeof(char));
+    char *test = (char*) malloc(1000);
+    if (!test) return -1;
+    test[727] = 69;
+    char *table = (char*) calloc(length * length * gm->symbolc, sizeof(char));
     if (!table) return -1;
-    memset(table, 0, length * length * gm->symbolc);
+    /*printf("# empty table\n");
+    print_table_internal(table, length, gm->symbolc);
+    memset(table, 0, length * length * gm->symbolc);*/
+    for (int i = 0; i < gm->symbolc; ++i) {
+        char *cell = &table[(6*length*length)+(0*length)+i];
+        *cell = 0;
+    }
     printf("# empty table\n");
     print_table_internal(table, length, gm->symbolc);
     int last_cell_reached = 0;
@@ -182,11 +188,14 @@ int cyk_check(grammar_t const *gm, char const *word, int printmode) {
     }
     printf("# finished table\n");
     print_table_internal(table, length, gm->symbolc);
+    printf("\n");
     if (table[0 *length * length + (length-1) * length] == 'S') {
         free(table);
+        free(test);
         return 1;
     }
     free(table);
+    free(test);
     return 0;
 }
 

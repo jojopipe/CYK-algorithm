@@ -9,7 +9,7 @@ B -> b | AT | SS
 ```
 # input word
 aabbaab
-# emptry table
+# empty table
 |1|2|3|4|5|6|7|
 |-|-|-|-|-|-|-|
 |      |      |      |      |      |      |      |
@@ -18,7 +18,7 @@ aabbaab
 |      |      |      |      |      |      |      |
 |      |      |      |      |      |      |      |
 |      |      |      |      |      |      |      |
-|  Aê |      |      |      |      |      |      |
+|      |      |      |      |      |      |      |
 # finished table
 |1|2|3|4|5|6|7|
 |-|-|-|-|-|-|-|
@@ -28,6 +28,7 @@ aabbaab
 |      |      |      | T   B|    V | T    |   U  |
 |      |      |      |      |STA   |S   VB| T  VB|
 |      |      |      |      |      |STA   |S   VB|
-|  Aê |      |      |      |      |      | T   B|
+|      |      |      |      |      |      | T   B|
+
 # result
 can be produced
